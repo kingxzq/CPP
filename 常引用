@@ -1,0 +1,20 @@
+#include<iostream>
+using namespace std;
+void TestConstRef()
+{
+	const int a = 10;
+	//int& ra = a;   // 该语句编译时会出错，a为常量
+	const int& ra = a;
+	// int& b = 10; // 该语句编译时会出错，10为常量
+	const int& b = 10;
+	double d = 12.34;
+	//int& rd = d; // 该语句编译时会出错，类型不同
+	const int& rd = d;
+	cout << a << " " << ra << " " << b << " " << d << " " << rd << endl;
+	printf("%p\n%p\n%p\n%p\n%p\n", &a, &ra, &b, &d, &rd);
+}
+int main()
+{
+	TestConstRef();
+	return 0;
+}
