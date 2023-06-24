@@ -1,0 +1,46 @@
+namespace xiaoxie
+{
+ 	int a = 0;
+ 	int b = 1;
+ 	int Add(int left, int right)
+ 	{
+ 		return left + right;
+ 	}
+ 	struct Node
+ 	{
+ 		struct Node* next;
+ 		int val;
+ 	};
+}
+int main()
+{
+ 	printf("%d\n", a);
+	return 0;
+}
+
+
+//1.加命名空间名称及作用域限定符
+int main()
+{
+    printf("%d\n", xiaoxie::a);
+    return 0;    
+}
+
+//2.使用using将命名空间中某个成员引入
+using xiaoxie::b;
+int main()
+{
+    printf("%d\n", xiaoxie::a);
+    printf("%d\n", b);
+    return 0;    
+}
+
+//3.使用using namespace 命名空间名称引入
+using namespce xiaoxie;
+int main()
+{
+    printf("%d\n", xiaoxie::a);
+    printf("%d\n", b);
+    Add(10, 20);
+    return 0;    
+}
