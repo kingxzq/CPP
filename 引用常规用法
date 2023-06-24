@@ -1,0 +1,21 @@
+#include<iostream>
+using namespace std;
+typedef struct list
+{
+	int arr[10];
+	int size;
+}L;
+int& ret(L& a, int b)
+{
+	return a.arr[b];
+}
+int main()
+{
+	L a;
+	a.arr[0] = 0;
+	ret(a, 0)++;
+	cout << a.arr[0] << endl;
+	ret(a, 0) = 10;
+	cout << a.arr[0] << endl;
+	return 0;
+}
