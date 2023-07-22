@@ -1,0 +1,42 @@
+#include <iostream>
+using namespace std;
+
+struct ListNode
+{
+	int _val;
+	ListNode* _next;
+
+	// 内存池
+	static allocator<ListNode> alloc;
+
+	void* operator new(size_t n)
+	{
+		cout << "operator new -> STL内存池allocator申请" << endl;
+		void* obj = alloc.allocate(1);
+		return obj;
+	}
+
+	void operator delete(void* ptr)
+	{
+		cout << "operator delete -> STL内存池allocator申请" << endl;
+
+		alloc.deallocate((ListNode*)ptr, 1);
+	}
+
+	struct ListNode(int val)
+		:_val(val)
+		, _next(nullptr)
+	{}
+};
+
+//allocator在STL后才会提到，这里我们先不探讨它
+allocator<ListNode> ListNode::alloc;
+
+int main()
+{
+	// 频繁申请ListNode. 想提高效率 -- 申请ListNode时，不去malloc，而是自己定制内存池
+	ListNode* node1 = new ListNode(1);
+	delete node1;
+
+	return 0;
+}
