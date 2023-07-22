@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+class A
+{
+public:
+	A(int a = 0)
+		: _a(a)
+	{
+		cout << "A():" << this << endl;
+	}
+
+	~A()
+	{
+		cout << "~A():" << this << endl;
+	}
+
+private:
+	int _a;
+};
+ //重载operator new，在申请空间时：打印在哪个文件、哪个函数、第多少行，申请了多少个字节
+void* operator new(size_t size, const char* fileName, const char* funcName, size_t lineNo)
+{
+	void* p = ::operator new(size);
+	cout <<"new:"<< fileName << "||" << funcName << "||" << lineNo << "||" << p << "||" << size << endl;
+	return p;
+}
+
+// 重载operator delete，在释放空间时：打印再那个文件、哪个函数、第多少行释放
+void operator delete(void* p, const char* fileName, const char* funcName, size_t lineNo)
+{
+	cout <<"delete:"<<fileName << "||" << funcName << "||" << lineNo << "||" << p << endl;
+	::operator delete(p);
+}
+
+//#ifdef _DEBUG
+#define new new(__FILE__, __FUNCTION__, __LINE__)
+#define delete(p) operator delete(p, __FILE__, __FUNCTION__, __LINE__)
+//#endif
+
+int main()
+{
+	A* p1 = new A;
+	delete(p1);
+
+	return 0;
+}
