@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int countValidNumbers(int N, int K) {
+    // Create a 2D DP array to store the count of valid numbers
+    vector<vector<int>> dp(N + 1, vector<int>(K, 0));
+
+    // Initialize base cases
+    for (int i = 1; i < K; ++i) {
+        dp[1][i] = 1;
+    }
+
+    // Fill in the DP array using recurrence relation
+    for (int n = 2; n <= N; ++n) {
+        for (int k = 0; k < K; ++k) {
+            for (int prev = 0; prev < K; ++prev) {
+                if (k != 0 || prev != 0) {
+                    dp[n][k] += dp[n - 1][prev];
+                }
+            }
+        }
+    }
+
+    // Calculate the total count
+    int totalCount = 0;
+    for (int k = 0; k < K; ++k) {
+        totalCount += dp[N][k];
+    }
+
+    return totalCount;
+}
+
+int main() {
+    int N, K;
+    cin >> N >> K;
+
+    int result = countValidNumbers(N, K);
+    cout << result << endl;
+
+    return 0;
+}
