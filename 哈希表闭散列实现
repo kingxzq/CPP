@@ -1,0 +1,163 @@
+#pragma once
+#include<iostream>
+using namespace std;
+enum State
+{
+	EMPTY,
+	EXIST,
+	DELETE
+};
+
+template<class K, class V>
+struct HashData
+{
+	pair<K, V> _kv;
+	State _state = EMPTY;
+};
+
+template<class K>
+struct HashFunc
+{
+	size_t operator()(const K& key)
+	{
+		return (size_t)key;
+	}
+};
+
+template<>
+struct HashFunc<string>//对字符型特化给定值乘以固定质数131降低冲突
+{
+	size_t operator()(const string& key)
+	{
+		size_t val = 0;
+		for (auto ch : key)
+		{
+			val *= 131;
+			val += ch;
+		}
+
+		return val;
+	}
+};
+template<class K, class V, class Hash = HashFunc<K>>
+class HashTable
+{
+public:
+	bool Insert(const pair<K, V>& kv)
+	{
+		if (Find(kv.first))
+			return false;
+
+		// 负载因子到了就扩容
+		if (_tables.size() == 0 || 10 * _size / _tables.size() >= 7) // 扩容
+		{
+			size_t newSize = _tables.size() == 0 ? 10 : _tables.size() * 2;
+			HashTable<K, V, Hash> newHT;
+			newHT._tables.resize(newSize);
+			// 旧表的数据映射到新表
+			for (auto e : _tables)
+			{
+				if (e._state == EXIST)
+				{
+					newHT.Insert(e._kv);
+				}
+			}
+
+			_tables.swap(newHT._tables);
+		}
+
+		Hash hash;
+		size_t hashi = hash(kv.first) % _tables.size();
+		while (_tables[hashi]._state == EXIST)
+		{
+			hashi++;
+			hashi %= _tables.size();
+		}
+
+		_tables[hashi]._kv = kv;
+		_tables[hashi]._state = EXIST;
+		++_size;
+
+		//Hash hash;
+		//size_t start = hash(kv.first) % _tables.size();
+		//size_t i = 0;
+		//size_t hashi = start;
+		//// 二次探测
+		//while (_tables[hashi]._state == EXIST)
+		//{
+		//	++i;
+		//	hashi = start + i*i;
+		//	hashi %= _tables.size();
+		//}
+
+		//_tables[hashi]._kv = kv;
+		//_tables[hashi]._state = EXIST;
+		//++_size;
+
+		return true;
+	}
+
+	HashData<K, V>* Find(const K& key)
+	{
+		if (_tables.size() == 0)
+		{
+			return nullptr;
+		}
+
+		Hash hash;
+		size_t start = hash(key) % _tables.size();
+		size_t hashi = start;
+		while (_tables[hashi]._state != EMPTY)
+		{
+			if (_tables[hashi]._state != DELETE && _tables[hashi]._kv.first == key)
+			{
+				return &_tables[hashi];
+			}
+
+			hashi++;
+			hashi %= _tables.size();
+
+			if (hashi == start)
+			{
+				break;
+			}
+		}
+
+		return nullptr;
+	}
+
+	bool Erase(const K& key)
+	{
+		HashData<K, V>* ret = Find(key);
+		if (ret)
+		{
+			ret->_state = DELETE;
+			--_size;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	void Print()
+	{
+		for (size_t i = 0; i < _tables.size(); ++i)
+		{
+			if (_tables[i]._state == EXIST)
+			{
+				printf("[%d:%d] ", i, _tables[i]._kv.first);
+			}
+			else
+			{
+				printf("[%d:*] ", i);
+			}
+		}
+		cout << endl;
+	}
+
+private:
+	vector<HashData<K, V>> _tables;
+	size_t _size = 0; // 存储多少个有效数据
+};
