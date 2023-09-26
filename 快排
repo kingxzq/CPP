@@ -1,0 +1,128 @@
+// 快速排序递归实现
+// 三数取中
+int GetMidIndex(int* a, int left, int right)
+{
+	int mid = left + ((right - left) >> 1);
+	if (a[mid] > a[left])
+	{
+		if (a[mid] < a[right])
+			return mid;
+		else if (a[left] > a[right])
+			return left;
+		else
+			return right;
+	}
+	else
+	{
+		if (a[mid] > a[right])
+			return mid;
+		else if (a[left] < a[right])
+			return left;
+		else
+			return right;
+	}
+}
+// 快速排序hoare版本a
+int PartSort1(int* a, int left, int right)
+{
+	int mini = GetMidIndex(a, left, right);
+	swap(a[mini], a[left]);
+
+	int keyi = left;
+	while (left < right)
+	{
+		while (left < right && a[keyi] <= a[right])
+			--right;
+		while (left < right && a[keyi] >= a[left])
+			++left;
+		swap(a[left], a[right]);
+	}
+	swap(a[left], a[keyi]);
+	return left;
+}
+// 快速排序挖坑法
+int PartSort2(int* a, int left, int right)
+{
+	int mini = GetMidIndex(a, left, right);
+	swap(a[mini], a[left]);
+
+	int keyi = a[left];
+	int pivot = left;
+	while (left < right)
+	{
+		while (left < right && keyi <= a[right])
+			--right;
+		a[pivot] = a[right];
+		pivot = right;
+
+		while (left < right && keyi >= a[left])
+			++left;
+		a[pivot] = a[left];
+		pivot = left;
+	}
+	a[pivot] = keyi;
+	return pivot;
+}
+// 快速排序前后指针法
+int PartSort3(int* a, int left, int right)
+{
+	int mini = GetMidIndex(a, left, right);
+	swap(a[mini], a[left]);
+
+	int keyi = left;
+	int prev = left;
+	int cur = prev + 1;
+	while (cur <= right)
+	{
+		if (a[cur] < a[keyi] && ++prev != cur)
+		{
+			swap(a[cur], a[prev]);
+		}
+
+		++cur;
+	}
+
+	swap(a[prev], a[keyi]);
+	return prev;
+}
+void QuickSort(int* a, int left, int right)
+{
+	if (left >= right)
+		return;
+	else
+	{
+		int keyi = PartSort3(a, left, right);
+		QuickSort(a, left, keyi - 1);
+		QuickSort(a, keyi+1,right);	
+	}
+}
+
+// 快速排序 非递归实现
+void QuickSortNonR(int* a, int left, int right)
+{
+	stack<int> st;
+	st.push(left);
+	st.push(right);
+
+	while (!st.empty())
+	{
+		int end = st.top();
+		st.pop();
+
+		int begin = st.top();
+		st.pop();
+
+		int keyi = PartSort3(a, begin, end);
+		if (keyi + 1 < end)
+		{
+			st.push(keyi + 1);
+			st.push(end);
+		}
+
+		if (begin < keyi - 1)
+		{
+			st.push(begin);
+			st.push(keyi - 1);
+		}
+	}
+}
