@@ -1,0 +1,212 @@
+#include <iostream>
+using namespace std;
+
+
+template<class K, class V>
+struct BSTreeNode
+{
+	BSTreeNode<K, V>* _left;
+	BSTreeNode<K, V>* _right;
+	K _key;
+	V _value;
+
+	BSTreeNode(const K& key, const V& value)
+		:_left(nullptr)
+		, _right(nullptr)
+		, _key(key)
+		, _value(value)
+	{}
+};
+
+template<class K, class V>
+class BSTree
+{
+	typedef BSTreeNode<K, V> Node;
+public:
+	bool Insert(const K& key, const V& value)
+	{
+		if (_root == nullptr)
+		{
+			_root = new Node(key, value);
+			return true;
+		}
+
+		Node* parent = nullptr;
+		Node* cur = _root;
+		while (cur)
+		{
+			if (cur->_key < key)
+			{
+				parent = cur;
+				cur = cur->_right;
+			}
+			else if (cur->_key > key)
+			{
+				parent = cur;
+				cur = cur->_left;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		cur = new Node(key, value);
+		if (parent->_key < key)
+		{
+			parent->_right = cur;
+		}
+		else
+		{
+			parent->_left = cur;
+		}
+
+		return true;
+	}
+
+	Node* Find(const K& key)
+	{
+		Node* cur = _root;
+		while (cur)
+		{
+			if (cur->_key < key)
+			{
+				cur = cur->_right;
+			}
+			else if (cur->_key > key)
+			{
+				cur = cur->_left;
+			}
+			else
+			{
+				return cur;
+			}
+		}
+
+		return nullptr;
+	}
+
+	bool Erase(const K& key)
+	{
+		return _Erase(_root, key);
+	}
+
+	void InOrder()
+	{
+		_InOrder(_root);
+		cout << endl;
+	}
+private:
+	bool _Erase(Node*& root, const K& key)
+	{
+		if (root == nullptr)
+		{
+			// 未找到键
+			return false;
+		}
+
+		if (key < root->_key)
+		{
+			// 键可能在左子树中
+			return _Erase(root->_left, key);
+		}
+		else if (key > root->_key)
+		{
+			// 键可能在右子树中
+			return _Erase(root->_right, key);
+		}
+		else
+		{
+			// 找到具有该键的节点，执行删除操作
+
+			// 情况1：节点只有一个子节点或没有子节点
+			if (root->_left == nullptr)
+			{
+				Node* temp = root->_right;
+				delete root;
+				root = temp;
+			}
+			else if (root->_right == nullptr)
+			{
+				Node* temp = root->_left;
+				delete root;
+				root = temp;
+			}
+			else
+			{
+				// 情况3：节点有两个子节点
+				// 找到中序后继（右子树中的最小节点）
+				Node* successor = _FindMin(root->_right);
+
+				// 将中序后继的键和值复制到当前节点
+				root->_key = successor->_key;
+				root->_value = successor->_value;
+
+				// 递归删除后继节点
+				_Erase(root->_right, successor->_key);
+			}
+
+			return true;
+		}
+	}
+
+	void _InOrder(Node* root)
+	{
+		if (root == nullptr)
+		{
+			return;
+		}
+
+		_InOrder(root->_left);
+		cout << root->_key << ":" << root->_value << endl;
+		_InOrder(root->_right);
+	}
+private:
+	Node* _root = nullptr;
+};
+
+void TestBSTree()
+{
+	//BSTree<string, string> dict;
+	//dict.Insert("insert", "插入");
+	//dict.Insert("erase", "删除");
+	//dict.Insert("left", "左边");
+	//dict.Insert("string", "字符串");
+
+	//string str;
+	//while (cin >> str)
+	//{
+	//	auto ret = dict.Find(str);
+	//	if (ret)
+	//	{
+	//		cout << str << ":" << ret->_value << endl;
+	//	}
+	//	else
+	//	{
+	//		cout << "单词拼写错误" << endl;
+	//	}
+	//}
+
+	string strs[] = { "苹果", "西瓜", "苹果", "樱桃", "苹果", "樱桃", "苹果", "樱桃", "苹果" };
+	// 统计水果出现的次
+	BSTree<string, int> countTree;
+	for (auto str : strs)
+	{
+		auto ret = countTree.Find(str);
+		if (ret == NULL)
+		{
+			countTree.Insert(str, 1);
+		}
+		else
+		{
+			ret->_value++;
+		}
+	}
+	countTree.InOrder();
+}
+
+
+int main() {
+	TestBSTree();
+	return 0;
+}
