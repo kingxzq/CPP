@@ -1,0 +1,72 @@
+//前序遍历
+vector<int> preorderTraversal(TreeNode* root) {
+    if(!root) return {};
+    stack<TreeNode*> st;
+    vector<int> ret;
+    st.push(root);
+    while(!st.empty()){
+        TreeNode* cur=st.top();
+        st.pop();
+        ret.push_back(cur->val);
+
+        if(cur->right) st.push(cur->right);
+        if(cur->left) st.push(cur->left);
+    }
+    return ret;
+}
+
+
+//中序遍历
+vector<int> inorderTraversal(TreeNode* root) {
+        stack<TreeNode*> st;
+        vector<int> ret;
+        TreeNode* cur = root;
+        while(cur||!st.empty()){
+            while(cur){
+                st.push(cur);
+                cur=cur->left;
+            }
+
+            TreeNode* top=st.top();
+            st.pop();
+
+            ret.push_back(top->val);
+
+            cur=top->right;
+        }
+        return ret;
+    }
+
+
+
+//后序遍历
+vector<int> postorderTraversal(TreeNode* root) {
+    vector<int> result;
+    if (!root) return result;
+
+    stack<TreeNode*> s;
+    stack<int> output;
+
+    s.push(root);
+
+    while (!s.empty()) {
+        TreeNode* current = s.top();
+        s.pop();
+
+        output.push(current->val);
+
+        if (current->left) {
+            s.push(current->left);
+        }
+        if (current->right) {
+            s.push(current->right);
+        }
+    }
+
+    while (!output.empty()) {
+        result.push_back(output.top());
+        output.pop();
+    }
+
+    return result;
+}
