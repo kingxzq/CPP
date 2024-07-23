@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int cap;
+    list<pair<int , int>> dataList;
+    unordered_map<int, list<pair<int , int>>::iterator> mp;
+    Solution(int capacity){
+         // write code here
+        cap = capacity;
+    }
+    int get(int key) {
+         // write code here
+        if(mp.find(key) != mp.end()) {
+            int value = mp[key]->second;
+            dataList.erase(mp[key]);
+            dataList.push_front(make_pair(key, value));
+            mp[key] = dataList.begin();
+            return value;
+        } else return -1;
+    }
+    void set(int key, int value){
+         // write code here
+        if(mp.find(key) != mp.end()) {
+            dataList.erase(mp[key]);
+        } else if(dataList.size() == cap) {
+            mp.erase(dataList.back().first);
+            dataList.pop_back();
+        }
+        dataList.push_front(make_pair(key, value));
+        mp[key] = dataList.begin();
+    }
+};
