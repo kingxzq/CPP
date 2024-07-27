@@ -1,0 +1,48 @@
+class Solution {
+  public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * max length of the subarray sum = k
+     * @param arr int整型vector the array
+     * @param k int整型 target
+     * @return int整型
+     */
+    int maxlenEqualK(vector<int>& arr, int k) {
+        unordered_map<int,int>dic;
+        vector<int> preSum(arr.size()+1, 0);
+        dic[preSum[0]] = 0;   
+        //前缀和相同的只保存前面的索引值                              
+        for(int i = 1; i <= arr.size(); ++i){     
+            preSum[i] = preSum[i-1]+arr[i-1];
+            if(dic.count(preSum[i])){
+                continue;
+            }
+            else{
+                dic[preSum[i]] = i;
+            }
+        }    
+        int res = 0;
+        //从后往前遍历前缀和数组要查找的目标值target = preSum[i]-k
+        for(int i = arr.size();i >= 0; --i){
+            if(dic.count(preSum[i]-k)){
+                res = max(res, i - dic[preSum[i]-k]);
+            }
+        } 
+        return res;        
+    }
+    // int maxlenEqualK(vector<int>& arr, int k) {
+    //     int res = 0;
+    //     // dp[i]表示以i为结尾的累加和为k的连续子数组长度
+    //     for(int i = 0; i < arr.size(); ++i){
+    //         int sum = 0;
+    //         for(int j =  0; j < arr.size(); ++j){
+    //             sum += arr[j];
+    //             if(sum == k){
+    //                 res = max(res, j-i+1);
+    //             }
+    //         }
+    //     }
+    //     return res;
+    // }
+};
