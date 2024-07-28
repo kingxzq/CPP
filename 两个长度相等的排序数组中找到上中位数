@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int findMedianinTwoSortedAray(vector<int>& arr1, vector<int>& arr2) {
+        int len = arr1.size()+arr2.size();
+        int mid=0;
+        //求出合并后中位数的下标
+        if(len%2==0){
+            mid=len/2;
+        } else {
+            mid=len/2+1;
+        }
+        vector<int>q;//为合并后的新数组
+        for(int i=0;i<arr1.size();i++) q.push_back(arr1[i]);
+        for(int i=0;i<arr2.size();i++) q.push_back(arr2[i]);
+        sort(q.begin(),q.end());//补充一下：sort的复杂度是o(n*logn) 所以这一题也是勉强卡过去了
+        int ans=0;
+        ans=q[mid-1];//注意下标要减去1
+        return ans;
+    }
+};
+时间复杂度:o(n*log(n)) 对所以元素遍历，而且sort排序效率可以达到log(n)
+空间复杂度:o(n)需要开辟空间存储
+优缺点：方便实现 但是空间复杂度高
