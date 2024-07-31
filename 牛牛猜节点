@@ -1,0 +1,29 @@
+class Solution {
+public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * 
+     * @param first int整型 
+     * @param second int整型 
+     * @param n int整型 
+     * @return int整型
+     */
+    int findNthValue(int first, int second, int n) {
+        // write code here
+        if (n == 1) return first;
+        if (n == 2) return second;
+
+        long long prev1 = second;
+        long long prev2 = first;
+        long long current = 0;
+
+        for (int i = 3; i <= n; ++i) {
+            current = prev1 + prev2;
+            prev2 = prev1;
+            prev1 = current;
+        }
+
+        return current;
+    }
+};
