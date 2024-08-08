@@ -1,0 +1,44 @@
+* 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+ *
+ * 
+ * @param s string字符串 
+ * @return int整型
+ *
+ * C语言声明定义全局变量请加上static，防止重复定义
+ */
+int max_num(int a,int b){
+    if(a>b)
+        return a;
+    else
+        return b;
+}
+int lengthOfLongestSubstring(char* s ) {
+    if(s==NULL)
+        return 0;
+    if(strlen(s)==1)
+        return 1;
+    int hash[200];//hash表 用于存放位置
+    int flag[200]={0};//flag 用于标识是否已存在
+    int len=strlen(s);
+    int maxlength=0,templength=0;
+    for(int i=0;i<len;i++){
+        //说明该位置之前已存在
+        if(flag[s[i]]==1)
+        {
+            //取最大值
+            maxlength=max_num(maxlength,templength);
+            //长度清空
+            templength=0;
+            memset(flag,0,200*sizeof(int));
+            //hash表flag清零
+            i=hash[s[i]]+1;
+        }
+        //先将位置存入hash表
+        hash[s[i]]=i;
+        flag[s[i]]=1;
+        templength++;
+        
+    }
+    maxlength=max_num(maxlength,templength);
+    return maxlength;
+}
