@@ -1,0 +1,110 @@
+class Solution {
+public:
+    // 如果做题的时候不允许使用内置的排序函数，下面是归并排序和快速排序的代码
+    // 合并两个已排序的部分
+    void merge(vector<int>& arr, int left, int mid, int right) {
+        int n1 = mid - left + 1; // 左侧子数组长度
+        int n2 = right - mid; // 右侧子数组长度
+
+        // 创建临时数组
+        vector<int> L(n1), R(n2);
+
+        // 复制数据到临时数组
+        for (int i = 0; i < n1; ++i) {
+            L[i] = arr[left + i];
+        }
+        for (int i = 0; i < n2; ++i) {
+            R[i] = arr[mid + 1 + i];
+        }
+
+        // 合并临时数组回原数组
+        int i = 0, j = 0, k = left;
+        while (i < n1 && j < n2) {
+            if (L[i] <= R[j]) {
+                arr[k] = L[i];
+                i++;
+            } else {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+
+        // 复制剩余元素
+        while (i < n1) {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+        while (j < n2) {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+
+    // 归并排序，时间复杂度 O(N log N)
+    void mergeSort(vector<int>& arr, int left, int right) {
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            mergeSort(arr, left, mid); // 排序左半部分
+            mergeSort(arr, mid + 1, right); // 排序右半部分
+            merge(arr, left, mid, right);
+        }
+    }
+
+
+    // 快速排序，时间复杂度 O(N log N)
+    void quickSort(vector<int>& arr, int left, int right) {
+        if (left >= right) return;
+
+        // 选择枢轴元素
+        int pivot = arr[left];
+        int i = left, j = right;
+
+        while (i < j) {
+            // 从右往左找小于 pivot 的元素
+            while (i < j 
+            if (i < j) arr[i++] = arr[j];
+            while (i < j 
+            if (i < j) arr[j--] = arr[i];
+        }
+
+        arr[i] = pivot; // 把 pivot 放到最终位置上
+        quickSort(arr, left, i - 1); // 递归地对左侧子数组进行快速排序
+        quickSort(arr, i + 1, right); // 递归地对右侧子数组进行快速排序
+    }
+    // 归并排序
+    // 判断一个数是否是质数
+    bool isPrime(int num) {
+        if (num <= 1) return false;
+        if (num <= 3) return true;
+        if (num % 2 == 0 || num % 3 == 0) return false;
+        for (int i = 5; i * i <= num; i += 6) {
+            if (num % i == 0 || num % (i + 2) == 0) return false;
+        }
+        return true;
+    }
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     * 
+     * @param trees int整型vector 
+     * @return int整型vector
+     */
+    vector<int> primeFruits(vector<int>& trees) {
+        // write code here
+        vector<int> primeF;
+        for (int fruit : trees) {
+            if (isPrime(fruit)) {
+                primeF.push_back(fruit);
+            }
+        }
+        // sort(primeF.begin(), primeF.end());
+        // 这道题逻辑上不复杂，就是判断质数加一个排序，面试遇到估计会不让用内置的排序
+        // 自己手撕排序的话，我写一下快排或归并
+        // quickSort(primeF, 0, primeF.size() - 1);
+        mergeSort(primeF, 0, primeF.size() - 1);
+        return primeF;
+    }
+};
