@@ -1,0 +1,18 @@
+int maxProduct(int* nums, int numsLen ) {
+    if(numsLen == 0)
+       return 0;
+    int* dp_max = malloc(sizeof(int) * numsLen);  //以nums[i]结尾的子数组的最大值
+    int* dp_min = malloc(sizeof(int) * numsLen);  //以nums[i]结尾的子数组的最小值
+    int res = nums[0];
+    dp_max[0] = nums[0];
+    dp_min[0] = nums[0];
+    for(int i = 1; i<numsLen; i++){
+     //即前一个最大值乘当前值，前一个最小值乘当前值，当前值，这三项哪个最大
+     dp_max[i] = max(max(dp_max[i-1]*nums[i], dp_min[i-1]*nums[i]), nums[i]);
+     //即前一个最大值乘当前值，前一个最小值乘当前值，当前值，这三项哪个最小
+     dp_min[i] = min(min(dp_max[i-1]*nums[i], dp_min[i-1]*nums[i]), nums[i]);
+     //前一次求的子数组最大乘积和这次求的最大值，哪个更大
+     res = max(res, dp_max[i]);
+    }
+    return res;
+}
