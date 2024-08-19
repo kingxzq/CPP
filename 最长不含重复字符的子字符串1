@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        //哈希表记录窗口内非重复的字符
+        unordered_map<char, int> mp; 
+        int res = 0;
+        //设置窗口左右边界
+        for(int left = 0, right = 0; right < s.length(); right++){ 
+            //窗口右移进入哈希表统计出现次数
+            mp[s[right]]++; 
+            //出现次数大于1，则窗口内有重复
+            while(mp[s[right]] > 1) 
+                //窗口左移，同时减去该字符的出现次数
+                mp[s[left++]]--; 
+            //维护子串长度最大值
+            res = max(res, right - left + 1); 
+        }
+        return res;
+    }
+};
