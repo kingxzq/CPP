@@ -1,0 +1,38 @@
+int res = INT_MAX; // 定义全局变量，作为最终结果返回
+
+class Solution {
+public:
+    /**
+     *
+     * @param matrix int整型vector<vector<>> the matrix
+     * @return int整型
+     */
+    int row, col;
+    int minPathSum(vector<vector<int> >& matrix) {
+        // 此方式定义数组不需要在递归函数中作为参数传入，节省栈空间
+        row = matrix.size();
+        col = matrix[0].size();
+        backtracking(0, 0, 0, matrix);
+        return res;
+    }
+    void backtracking(int curRow, int curCol, int curSum, vector<vector<int> >& matrix) {
+        // 递归终止条件
+        if (curRow == row || curCol == col)
+            return;
+        // 更新当前路径和
+        curSum += matrix[curRow][curCol];
+        // 递归终止条件
+        if (curRow == row - 1 && curCol == col - 1) {
+            if (curSum < res) {
+                res = curSum;
+            }
+            curSum -= matrix[curRow][curCol];
+            return;
+        }
+        // 开始递归
+        backtracking(curRow + 1, curCol, curSum, matrix);
+        backtracking(curRow, curCol + 1, curSum, matrix);
+        // 重置当前路径和
+        curSum -= matrix[curRow][curCol];
+    }
+};
