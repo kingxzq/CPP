@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<int> GetLeastNumbers_Solution(vector<int> input, int k) {
+        vector<int> ret;
+        if (k==0 || k > input.size()) return ret;
+        priority_queue<int, vector<int>> pq;
+        for (const int val : input) {
+            if (pq.size() < k) {
+                pq.push(val);
+            }
+            else {
+                if (val < pq.top()) {
+                    pq.pop();
+                    pq.push(val);
+                }
+
+            }
+        }
+
+        while (!pq.empty()) {
+            ret.push_back(pq.top());
+            pq.pop();
+        }
+        return ret;
+    }
+};
