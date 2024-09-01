@@ -1,0 +1,61 @@
+#include <iostream>
+#include <memory>
+#include <ostream>
+
+class Student {
+private:
+    int _id;
+    int _age;
+public:
+    // Rule of Zero
+    Student(int id, int age) : _id(id), _age(age) {}
+
+    // getter
+    [[nodiscard]] int getId() const {
+        return _id;
+    }
+    [[nodiscard]] int getAge() const {
+        return _age;
+    }
+
+    // 打印函数，用于输出学生的信息还有 shared_ptr 的引用计数
+    static void print(std::shared_ptr<Student>& student) {
+        std::cout << student->getId() << " " << student->getAge() << " "
+                  << student.use_count() << std::endl;
+    }
+};
+
+int main() {
+    int T, N;
+    std::cin >> T;
+
+    while (T--) {
+        std::cin >> N;
+        std::shared_ptr<Student> sp;
+
+        for (int i = 0; i < N; ++i) {
+            std::string command;
+            std::cin >> command;
+
+            // 处理各种操作
+            if (command == "new") {
+                int id, age;
+                std::cin >> id >> age;
+                sp = std::make_shared<Student>(id, age); // 创建新的 Student 对象
+            } else if (command == "copy") {
+                auto new_sp = sp; // 复制 shared_ptr
+                sp = new_sp;
+            } else if (command == "print") {
+                Student::print(sp);
+            } else {
+                std::cout << "usage1: new id age" << std::endl
+                          << "usage2: copy" << std::endl
+                          << "usage3: print" << std::endl
+                          << "Please try again..." << std::endl;
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+// 64 位输出请用 printf("%lld")
