@@ -1,0 +1,40 @@
+/**
+ * struct TreeNode {
+ *  int val;
+ *  struct TreeNode *left;
+ *  struct TreeNode *right;
+ *  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ * };
+ */
+class Solution {
+  public:
+    /**
+     * 代码中的类名、方法名、参数名已经指定，请勿修改，直接返回方法规定的值即可
+     *
+     *
+     * @param root TreeNode类
+     * @return int整型
+     */
+    int sumOfLeftLeaves(TreeNode* root) {
+        // write code here
+        int sum =0;
+        traversal(root,sum);
+
+        return sum;
+    }
+
+  private:
+    void traversal(TreeNode* node, int& sum) {
+        if (node == nullptr) {
+            return;
+        }
+        if (node->left != nullptr && node->left->left == nullptr &&
+                node->left->right == nullptr) {
+            sum += node->left->val;
+        }
+
+        traversal(node->left, sum);
+        traversal(node->right, sum);
+
+    }
+};
